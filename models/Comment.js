@@ -12,7 +12,7 @@ const commentSchema = new mongoose.Schema(
     avatar: {
       type: String,
     },
-    replies: [],
+    replies: [{ type: mongoose.Schema.Types.ObjectId, ref: "Reply" }],
     vote: {
       type: Number,
       default: 0,
