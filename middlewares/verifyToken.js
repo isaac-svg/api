@@ -18,14 +18,24 @@ module.exports.verifyUser = (req, res, next) => {
     if (req.user.id == req.params.id) {
       return next();
     } else {
-      return next(new Error("You are not authorized to perfom this operation"));
+      return next(
+        res.json(StatusCodes.UNAUTHORIZED).json({
+          success: false,
+          msg: "Unathorized to perform this operation",
+        })
+      );
     }
   });
 };
 module.exports.isNotAllowed = (req, res, next) => {
   this.verifyToken(req, res, next, () => {
     if (req.user.id == req.params.id) {
-      return next(new Error("You are not authorized to perfom this operation"));
+      return next(
+        res.json(StatusCodes.UNAUTHORIZED).json({
+          success: false,
+          msg: "Unathorized",
+        })
+      );
     } else {
       return next();
     }

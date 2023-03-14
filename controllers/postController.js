@@ -173,7 +173,11 @@ module.exports.getAllComments = async (req, res) => {
     // const comments = await Comments.deleteMany();
     // const replies = await Reply.deleteMany();
 
-    const comments = await Comments.find().populate("replies");
+    const comments = await (
+      await Comments.find().populate("replies")
+    ).map(async (reply) => {
+      await reply.populate("replies");
+    });
 
     const replies = await Reply.find()
       .populate("replies", ["content", "vote"])
