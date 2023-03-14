@@ -15,7 +15,9 @@ app.use(bodyParser.urlencoded({ extended: true, limit: "30mb" }));
 app.use(cookieParser());
 app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/comment", commentRoute);
-
+app.get("/", (req, res) => {
+  res.send("Welcome to the api");
+});
 const PORT = process.env.PORT || 5000;
 connectDB();
 app.listen(PORT, () => console.log(`Server is listening on port ${PORT}`));
