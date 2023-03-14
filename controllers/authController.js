@@ -6,10 +6,20 @@ const { User } = require("../models/User");
 const app = require("express")();
 app.use(cookieParser());
 module.exports.register = async (req, res) => {
-  const { email, password, username } = req.body;
+  const { username, email, password } = req.body;
 
-  const newUser = User({ email, password, username });
+  if (!username || !email || !password) {
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      success: false,
+      message: "Please all fileds are required",
+    });
+  }
+  const newUser = new User({ email, password, username });
   await newUser.save();
+  res.status(StatusCodes.CREATED).json({
+    success: true,
+    msg: "User created successfully",
+  });
 };
 
 module.exports.login = async (req, res) => {
@@ -36,18 +46,29 @@ module.exports.login = async (req, res) => {
   }
   if (isPasswordMatch) {
     const token = await user.createToken();
-    res.cookie("token", token).json("ok");
+    res
+      .cookie("access_token", token)
+      .status(StatusCodes.OK)
+      .json({
+        success: true,
+        msg: "Login successfull",
+        payload: { username: user.username, id: user._id },
+      });
   }
-  res.status(StatusCodes.OK).json({
-    success: true,
-    msg: "Login successfull",
-    payload: user.username,
-  });
 };
 
 module.exports.logout = function (req, res) {
   req.cookies("token", "").json("ok");
+  res.status(StatusCodes.OK).json({
+    success: true,
+    msg: "Logout successfull",
+  });
 };
 // PROFILE PAGE
 
-module.exports.profile = async (req, res) => {};
+module.exports.profile = async (req, res) => {
+  return res.status(StatusCodes.OK).json({
+    success: true,
+    msg: "You have access to this route",
+  });
+};

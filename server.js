@@ -12,10 +12,12 @@ app.use(express.json());
 app.use(bodyParser.json({ extended: true, limit: "30mb" }));
 app.use(bodyParser.urlencoded({ extended: true, limit: "30mb" }));
 // routes
-app.use("/api/auth", authRoute);
-app.use("/comment", commentRoute);
+app.use("/api/v1/auth", authRoute);
+app.use("api/v1/comment", commentRoute);
 app.use(cookieParser());
+
+const PORT = process.env.PORT || 5000;
 connectDB();
-app.listen(5000, () => console.log("sever is running ....."));
+app.listen(PORT, () => console.log(`Server is listening on port ${PORT}`));
 
 process.on("unhandledRejection", (error) => console.log(error.meassage));

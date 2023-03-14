@@ -21,24 +21,11 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-userSchema.pre("save", async function (req, res, next) {
-  const { username, email, password } = req.body;
-  if (!username || !email || !password) {
-    return res.status(StatusCodes.BAD_REQUEST).json({
-      success: false,
-      message: "Please all fileds are required",
-    });
-  }
+userSchema.pre("save", async function () {
   const salt = await bcrypt.genSalt(+process.env.SALT);
-  const hashedPassword = await bcrypt.hash(password, salt);
-  this.password = hashedPassword;
-  res.status(StatusCodes.CREATED).json({
-    success: true,
-    msg: "User created successfully",
-  });
-  next();
+  this.password = await bcrypt.hash(this.password, salt);
 });
-userSchema.methods.generateToken = function () {
+userSchema.methods.createToken = function () {
   const token = jwt.sign(
     { username: this.username, userId: this._id },
     process.env.JWT_SECRET
