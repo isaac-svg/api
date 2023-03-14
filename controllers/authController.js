@@ -47,7 +47,7 @@ module.exports.login = async (req, res) => {
   if (isPasswordMatch) {
     const token = await user.createToken();
     res
-      .cookie("access_token", token)
+      .cookie("access_token", token, { httpOnly: true })
       .status(StatusCodes.OK)
       .json({
         success: true,
