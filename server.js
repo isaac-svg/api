@@ -7,12 +7,16 @@ const connectDB = require("./config/DB");
 const authRoute = require("./routes/authRoute");
 const commentRoute = require("./routes/commentRoute");
 const cookieParser = require("cookie-parser");
+const xssclean = require("xss-clean");
+const helmet = require("helmet");
 app.use(cors({ credentials: true }));
 app.use(express.json());
 app.use(bodyParser.json({ extended: true, limit: "30mb" }));
 app.use(bodyParser.urlencoded({ extended: true, limit: "30mb" }));
 // routes
 app.use(cookieParser());
+app.use(xssclean()); //Node.js Connect middleware to sanitize user input coming from POST body, GET queries, and url params
+app.use(helmet()); // sets the varius http headers
 app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/comment", commentRoute);
 app.get("/", (req, res) => {

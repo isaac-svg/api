@@ -31,7 +31,7 @@ const replySchema = new mongoose.Schema(
     avatar: {
       type: String,
     },
-    replies: [{ type: mongoose.Schema.Types.ObjectId, ref: "Reply" }],
+    replies: [{ type: mongoose.Schema.Types.ObjectId, ref: "ReplyToReply" }],
     vote: {
       type: Number,
       default: 0,

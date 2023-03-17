@@ -173,17 +173,18 @@ module.exports.getAllComments = async (req, res) => {
     // const comments = await Comments.deleteMany();
     // const replies = await Reply.deleteMany();
 
-    const comments = await (
-      await Comments.find().populate("replies")
-    ).map(async (reply) => {
-      await reply.populate("replies");
-    });
+    const comments = await Comments.find()
+      .sort({ createdAt: "desc" })
+      .populate({
+        path: "replies",
+        populate: {
+          path: "replies",
+        },
+      })
+      .sort({ createdAt: "desc" });
+    // let a = comments.map((comment) => comment.replies);
 
-    const replies = await Reply.find()
-      .populate("replies", ["content", "vote"])
-      .limit(10);
-
-    res.json({ From: replies, comments });
+    res.json({ comments });
     // res.json("ok");
   } catch (error) {
     res.json({
